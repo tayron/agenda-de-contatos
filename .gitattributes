@@ -1,3 +1,6 @@
 *.go linguist-detectable=true
-should/*.go linguist-detectable=true
-.github/* linguist-detectable=false
+controllers/*.go linguist-detectable=true
+models/*.go linguist-detectable=true
+
+dist/* linguist-detectable=false
+public/* linguist-detectable=false
