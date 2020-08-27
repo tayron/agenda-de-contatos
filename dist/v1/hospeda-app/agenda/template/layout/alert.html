@@ -1,0 +1,7 @@
+{{define "alert"}}
+    {{if .FlashMessage.Message }}
+    <div class="alert alert-{{ .FlashMessage.Type }}" role="alert">
+        {{ .FlashMessage.Message }}
+    </div>
+    {{end}}
+{{end}}
