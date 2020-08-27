@@ -2,5 +2,7 @@
 controllers/*.go linguist-detectable=true
 models/*.go linguist-detectable=true
 
+
 dist/* linguist-detectable=false
 public/* linguist-detectable=false
+template/* linguist-detectable=false
