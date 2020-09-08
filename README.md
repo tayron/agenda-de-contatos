@@ -1,21 +1,7 @@
 # Agenda de contatos
-Sistema de agenda de contatos, versão 1.0
+Sistema simples com crud para armazenamento e consulta de contatos
 
-## Tecnologias
-* Go versão 1.14.4 linux/amd64
-* https://github.com/ColorlibHQ/AdminLTE/releases/tag/v3.0.5
-* Bootstrap v4.5.0 (https://getbootstrap.com/)
-* https://icons.getbootstrap.com/
-
-## Dependências
-* github.com/joho/godotenv
-* github.com/gorilla/mux
-* golang.org/x/crypto/bcrypt
-* github.com/go-sql-driver/mysql
-
-Para instalar dependência basta executar o comando go get -u link-repositório, exemplo: : ```go get -u github.com/go-sql-driver/mysql```
-
-## Configurando a aplicação 
+## Configuração
 Altere o arquivo .env na raiz do projeto
 
 ## Administrador
