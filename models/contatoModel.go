@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/tayron/agenda-contatos/bootstrap/library/database"
 )
@@ -158,17 +159,22 @@ func (c Contato) BuscarTodos() []Contato {
 }
 
 // BuscarTodosFiltrandoPorNome - Retorna todos os contatos filtrando por nome
-func (c Contato) BuscarTodosFiltrandoPorNome(filtroNome string) []Contato {
+func (c Contato) BuscarTodosFiltrandoPorNome(filtroNome string, offset int) []Contato {
 
 	db := database.ObterConexao()
 	defer db.Close()
 
 	var sql string = `SELECT id, nome, departamento, ramal, telefone, celular, email
-		FROM contatos WHERE nome LIKE ? ORDER BY id DESC`
+		FROM contatos WHERE nome LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?`
 
 	filtroNomeLike := fmt.Sprintf("%%%s%%", filtroNome)
 
-	rows, _ := db.Query(sql, filtroNomeLike)
+	numeroRegistro := os.Getenv("NUMERO_REGISTRO_POR_PAGINA")
+	rows, err := db.Query(sql, filtroNomeLike, numeroRegistro, offset)
+
+	if err != nil {
+		panic(err)
+	}
 	defer rows.Close()
 
 	var listaContatos []Contato
@@ -216,4 +222,29 @@ func (c Contato) BuscarPorID() Contato {
 	}
 
 	return contatoModel
+}
+
+// ObterNumeroContatosPorNome -
+func ObterNumeroContatosPorNome(filtroNome string) int {
+	db := database.ObterConexao()
+	defer db.Close()
+
+	var sql string = `SELECT count(0) FROM contatos WHERE nome LIKE ?`
+
+	filtroNomeLike := fmt.Sprintf("%%%s%%", filtroNome)
+
+	rows, err := db.Query(sql, filtroNomeLike)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer rows.Close()
+
+	var numero int = 0
+	for rows.Next() {
+		rows.Scan(&numero)
+	}
+
+	return numero
 }

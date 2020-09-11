@@ -1,41 +1,47 @@
 package controllers
 
 import (
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
 
-	"github.com/tayron/agenda-contatos/bootstrap/library/template"
-	"github.com/tayron/agenda-contatos/models"
 	"github.com/gorilla/mux"
+	aplicacaoTemplate "github.com/tayron/agenda-contatos/bootstrap/library/template"
+	"github.com/tayron/agenda-contatos/models"
+	"github.com/tayron/gopaginacao"
 )
 
+// ListarContatosPublico -
 func ListarContatosPublico(w http.ResponseWriter, r *http.Request) {
 	filtroNome := strings.TrimSpace(r.FormValue("nome"))
 
 	var listaContatos []models.Contato
 	ContatoModel := models.Contato{}
 
-	if filtroNome != "" {
-		listaContatos = ContatoModel.BuscarTodosFiltrandoPorNome(filtroNome)
-	} else {
-		listaContatos = ContatoModel.BuscarTodos()
+	numeroTotalRegistro := models.ObterNumeroContatosPorNome(filtroNome)
+	htmlPaginacao, offset, err := gopaginacao.CriarPaginacao(numeroTotalRegistro, r)
+
+	if err == nil {
+		listaContatos = ContatoModel.BuscarTodosFiltrandoPorNome(filtroNome, offset)
 	}
 
 	var Contatos = struct {
 		ListaContatos []models.Contato
 		FiltroNome    string
+		Paginacao     template.HTML
 	}{
 		ListaContatos: listaContatos,
 		FiltroNome:    filtroNome,
+		Paginacao:     template.HTML(htmlPaginacao),
 	}
 
-	parametros := template.Parametro{
-		System:    template.ObterInformacaoSistema(w, r),
+	parametros := aplicacaoTemplate.Parametro{
+		System:    aplicacaoTemplate.ObterInformacaoSistema(w, r),
 		Parametro: Contatos,
 	}
 
-	template.LoadView(w, "template/contato/*.html", "listarContatosPublicoPage", parametros)
+	aplicacaoTemplate.LoadView(w, "template/contato/*.html", "listarContatosPublicoPage", parametros)
 }
 
 // ListarContato -
@@ -47,33 +53,36 @@ func ListarContato(w http.ResponseWriter, r *http.Request) {
 	var listaContatos []models.Contato
 	ContatoModel := models.Contato{}
 
-	if filtroNome != "" {
-		listaContatos = ContatoModel.BuscarTodosFiltrandoPorNome(filtroNome)
-	} else {
-		listaContatos = ContatoModel.BuscarTodos()
+	numeroTotalRegistro := models.ObterNumeroContatosPorNome(filtroNome)
+	htmlPaginacao, offset, err := gopaginacao.CriarPaginacao(numeroTotalRegistro, r)
+
+	if err == nil {
+		listaContatos = ContatoModel.BuscarTodosFiltrandoPorNome(filtroNome, offset)
 	}
 
 	var Contatos = struct {
 		ListaContatos []models.Contato
 		FiltroNome    string
+		Paginacao     template.HTML
 	}{
 		ListaContatos: listaContatos,
 		FiltroNome:    filtroNome,
+		Paginacao:     template.HTML(htmlPaginacao),
 	}
 
-	parametros := template.Parametro{
-		System:    template.ObterInformacaoSistema(w, r),
+	parametros := aplicacaoTemplate.Parametro{
+		System:    aplicacaoTemplate.ObterInformacaoSistema(w, r),
 		Parametro: Contatos,
 	}
 
-	template.LoadView(w, "template/contato/*.html", "listarContatosPage", parametros)
+	aplicacaoTemplate.LoadView(w, "template/contato/*.html", "listarContatosPage", parametros)
 }
 
 // CadastrarContato -
 func CadastrarContato(w http.ResponseWriter, r *http.Request) {
 	ValidarSessao(w, r)
 
-	flashMessage := template.FlashMessage{}
+	flashMessage := aplicacaoTemplate.FlashMessage{}
 
 	if r.Method == "POST" {
 		ContatoEntidade := models.Contato{
@@ -88,18 +97,18 @@ func CadastrarContato(w http.ResponseWriter, r *http.Request) {
 		retornoGravacao := ContatoEntidade.Gravar()
 
 		if retornoGravacao == true {
-			flashMessage.Type, flashMessage.Message = template.ObterTipoMensagemGravacaoSucesso()
+			flashMessage.Type, flashMessage.Message = aplicacaoTemplate.ObterTipoMensagemGravacaoSucesso()
 		} else {
-			flashMessage.Type, flashMessage.Message = template.ObterTipoMensagemGravacaoErro()
+			flashMessage.Type, flashMessage.Message = aplicacaoTemplate.ObterTipoMensagemGravacaoErro()
 		}
 	}
 
-	parametros := template.Parametro{
-		System:       template.ObterInformacaoSistema(w, r),
+	parametros := aplicacaoTemplate.Parametro{
+		System:       aplicacaoTemplate.ObterInformacaoSistema(w, r),
 		FlashMessage: flashMessage,
 	}
 
-	template.LoadView(w, "template/contato/*.html", "cadastrarContatoPage", parametros)
+	aplicacaoTemplate.LoadView(w, "template/contato/*.html", "cadastrarContatoPage", parametros)
 }
 
 // EditarContato -
@@ -109,7 +118,7 @@ func EditarContato(w http.ResponseWriter, r *http.Request) {
 	parametrosURL := mux.Vars(r)
 	id, _ := strconv.Atoi(parametrosURL["id"])
 
-	flashMessage := template.FlashMessage{}
+	flashMessage := aplicacaoTemplate.FlashMessage{}
 
 	if r.Method == "POST" {
 		ContatoModel := models.Contato{
@@ -125,9 +134,9 @@ func EditarContato(w http.ResponseWriter, r *http.Request) {
 		retornoGravacao := ContatoModel.Atualizar()
 
 		if retornoGravacao == true {
-			flashMessage.Type, flashMessage.Message = template.ObterTipoMensagemGravacaoSucesso()
+			flashMessage.Type, flashMessage.Message = aplicacaoTemplate.ObterTipoMensagemGravacaoSucesso()
 		} else {
-			flashMessage.Type, flashMessage.Message = template.ObterTipoMensagemGravacaoErro()
+			flashMessage.Type, flashMessage.Message = aplicacaoTemplate.ObterTipoMensagemGravacaoErro()
 		}
 	}
 
@@ -147,13 +156,13 @@ func EditarContato(w http.ResponseWriter, r *http.Request) {
 		Contato: contato,
 	}
 
-	parametros := template.Parametro{
-		System:       template.ObterInformacaoSistema(w, r),
+	parametros := aplicacaoTemplate.Parametro{
+		System:       aplicacaoTemplate.ObterInformacaoSistema(w, r),
 		FlashMessage: flashMessage,
 		Parametro:    Contato,
 	}
 
-	template.LoadView(w, "template/contato/*.html", "editarContatoPage", parametros)
+	aplicacaoTemplate.LoadView(w, "template/contato/*.html", "editarContatoPage", parametros)
 }
 
 // ExcluirContato -
@@ -161,7 +170,7 @@ func ExcluirContato(w http.ResponseWriter, r *http.Request) {
 	ValidarSessao(w, r)
 
 	idContato, _ := strconv.Atoi(r.FormValue("id"))
-	flashMessage := template.FlashMessage{}
+	flashMessage := aplicacaoTemplate.FlashMessage{}
 
 	ContatoModel := models.Contato{
 		ID: idContato,
@@ -170,9 +179,9 @@ func ExcluirContato(w http.ResponseWriter, r *http.Request) {
 	retornoExclusao := ContatoModel.Excluir()
 
 	if retornoExclusao == true {
-		flashMessage.Type, flashMessage.Message = template.ObterTipoMensagemExclusaoSucesso()
+		flashMessage.Type, flashMessage.Message = aplicacaoTemplate.ObterTipoMensagemExclusaoSucesso()
 	} else {
-		flashMessage.Type, flashMessage.Message = template.ObterTipoMensagemExclusaoErro()
+		flashMessage.Type, flashMessage.Message = aplicacaoTemplate.ObterTipoMensagemExclusaoErro()
 	}
 
 	var Contatos = struct {
@@ -183,11 +192,11 @@ func ExcluirContato(w http.ResponseWriter, r *http.Request) {
 		FiltroNome:    "",
 	}
 
-	parametros := template.Parametro{
-		System:       template.ObterInformacaoSistema(w, r),
+	parametros := aplicacaoTemplate.Parametro{
+		System:       aplicacaoTemplate.ObterInformacaoSistema(w, r),
 		FlashMessage: flashMessage,
 		Parametro:    Contatos,
 	}
 
-	template.LoadView(w, "template/contato/*.html", "listarContatosPage", parametros)
+	aplicacaoTemplate.LoadView(w, "template/contato/*.html", "listarContatosPage", parametros)
 }
