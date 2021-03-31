@@ -54,9 +54,9 @@ func CriarUsuarioAdministrador() {
 		stmt, _ := db.Prepare(sql)
 
 		usuarioModel := Usuario{
-			Nome:              "Tayron",
-			Login:             "tayron",
-			Senha:             "$2a$14$ZN3eWRZs30egm9pwDOucVeBBu28LMoou4JCTf0EsU2pzLCLyshYnu",
+			Nome:              "Administrador",
+			Login:             "administrador",
+			Senha:             "$2a$14$En9m02fCWvG.lECIIlQ0R.F6DDe6QEhZzV6DIPg07ZzDYLk1HUBpa",
 			Ativo:             true,
 			PermiteExclusao:   false,
 			permiteEdicao:     false,

@@ -5,8 +5,8 @@ Sistema simples com crud para armazenamento e consulta de contatos
 Altere o arquivo .env na raiz do projeto
 
 ## Administrador
-**Usuário:** tayron
-**Senha:** NftK2O7y
+**Usuário:** administrador
+**Senha:** yivLTC12
 
 ## Execução embiente desenvolvimento
 ```env AMBIENTE=desenvolvimento go run *.go```
