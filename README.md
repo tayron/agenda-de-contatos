@@ -10,6 +10,10 @@ Altere o arquivo .env na raiz do projeto
 
 ## Execução embiente desenvolvimento
 ```env AMBIENTE=desenvolvimento go run *.go```
+## Deploy
+```go build -o "agenda" -ldflags "-s -w" main.go && upx agenda```
+
+
 
 ## Executando binário da aplicação
 Entre no diretório: dist/v1/hospeda-app/agenda e execute o comando 
