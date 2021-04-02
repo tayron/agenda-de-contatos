@@ -1,0 +1,12 @@
+FROM golang
+
+MAINTAINER Hospeda App <ti@hospeda.app>
+
+RUN apt-get update
+RUN apt-get install ffmpeg -y
+
+WORKDIR /aplicacao
+
+ENTRYPOINT ./agenda
+
+EXPOSE 80

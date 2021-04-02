@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    agenda.contato:
+        container_name: agenda.contato
+        build:
+            context: .
+            dockerfile: docker-build
+        volumes:
+            - ./:/aplicacao
+        command: sh -c "/aplicacao/agenda"
