@@ -22,7 +22,7 @@ O sistema tem uma área pública que não precisa de login e senha para acessar,
 
 3. A aplicação roda na porta 80 dentro do container docker, caso deseje alterar, basta mudar as configuarções no arquivo .env.
 
-## Executar aplicação:
+## Executando aplicação:
 
 A aplicação roda sobre container Docker bastando executar o comando: docker-compose up --build -d
 
@@ -95,3 +95,7 @@ Obtendo ip da aplicação:
 ```
 
 Conforme exibido acima a aplicação estará disponível através do endereço: http://172.23.0.21
+
+## Dados de acesso
+**Usuário:** administrador
+**Senha:** yivLTC12
